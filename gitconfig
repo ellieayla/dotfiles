@@ -11,6 +11,9 @@
   tag-builds = "!~/workspace/git-tag-builds/.env/bin/git-tag-builds"
   cb = rev-parse --abbrev-ref HEAD
   git = !exec git
+
+  log-commit-message-size = "!echo 'commit,date,email,bytes';git rev-list --all | xargs -I @ sh -c 'who=$(git show --format="%h,%as,\"%ae\"," -s "@"); size=$(git show -s --format=%B @ | wc -c); echo "$who"$size'"
+
   hotfiles = "!git log --format=format: --name-only | egrep -v '^$' | sort | uniq -c | sort -rg | head -10"
   bl = for-each-ref --sort=-committerdate --format='%(HEAD) %(color:red)%(objectname:short)%(color:reset) - %(color:yellow)(%(refname:short))%(color:reset) %(color:green)(%(authordate:relative))%(color:reset) %(color:bold blue)<%(authorname)>%(color:reset)' refs/heads
   cleanup-local-branches = "!git branch --merged master | grep -v master | xargs git branch -d"
