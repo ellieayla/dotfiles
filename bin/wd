@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# Every second, run the command.
+exec > >(ds)
+
+while true; do
+  /usr/bin/env bash -c "$@"
+  sleep 10
+done

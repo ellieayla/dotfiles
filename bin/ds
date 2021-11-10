@@ -1,0 +1,8 @@
+#!/usr/bin/env python
+from __future__ import print_function
+
+import sys;
+from datetime import datetime;
+
+for _ in sys.stdin:
+    print(datetime.utcnow(), ":", _, end="")

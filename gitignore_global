@@ -1,0 +1,11 @@
+# IDE
+.idea/
+.idea/misc.xml
+../.idea/misc.xml
+# Python
+.env/
+__pycache__/
+
+
+# Mac
+.DS_Store

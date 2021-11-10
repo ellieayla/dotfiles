@@ -1,0 +1,85 @@
+#!/usr/bin/env python
+from __future__ import print_function
+import argparse
+import socket
+import sys
+
+
+def timeout(s):
+    if s == "None":
+        return None
+    return float(s)
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+      formatter_class=argparse.RawDescriptionHelpFormatter,
+      description="Test connection to a remote TCP port.",
+      epilog=
+        "Uses getaddrinfo() to resolve hostnames. If bytes are read from the socket\n"
+        "they are written to stdout. There is no ability to Listen or Transmit.\n"
+        "Reports success, failure or timeout message on stderr and exit code 0, 1, 2.\n"
+        "\n"
+        "Examples:\n"
+        '  %(prog)s localhost 514\n'
+        "  %(prog)s example.com 389 --timeout=2 --quiet || echo \"No LDAP\"\n"
+      )
+    parser.add_argument("host", nargs=1, type=str, help="Establish connection to remote Hostname or IP")
+    parser.add_argument("port", nargs=1, type=int, help="Remote TCP port number")
+    parser.add_argument("-4", action="store_const", dest="protocolnetwork", const=socket.AF_INET, default=socket.AF_UNSPEC, help="Force IPv4")
+    if socket.has_ipv6:
+        parser.add_argument("-6", action="store_const", dest="protocolnetwork", const=socket.AF_INET6, default=socket.AF_UNSPEC, help="Force IPv6")
+    parser.add_argument("--timeout", "-w", default=2, metavar="N", type=timeout, help="Timeout in seconds, or None")
+    parser.add_argument("--read", default=0, type=int, help="Number of bytes to read from remote. For negative values, attempt to read and ignore underrun. Default %(default)s")
+    parser.add_argument("--quiet", "-q", action="store_const", const=True, default=False, help="No success/failure/timeout messages.")
+    args = parser.parse_args()
+
+    if args.timeout==-1:
+        args.timeout=None
+
+    try:
+        for res in socket.getaddrinfo(args.host[0], args.port[0], args.protocolnetwork, socket.SOCK_STREAM):
+            af, socktype, proto, name, address = res
+            s = None
+            try:
+                s = socket.socket(af, socktype, proto)
+                s.settimeout(args.timeout)
+                s.connect(address)
+            except KeyboardInterrupt:
+                if s:
+                    s.close()
+                s = None
+                break
+            except Exception as e:
+                if not args.quiet:
+                    print("Failed to connect to remote host %s: %s" % (res,e), file=sys.stderr)
+                if s:
+                    s.close()
+                s = None
+                continue
+            break
+    except socket.gaierror as e:
+        if not args.quiet:
+            print("Failed to connect to remote host: %s" % e, file=sys.stderr)
+        s=None
+
+    if s is None:
+        sys.exit(1)
+
+    print("Connected to remote host %s" % (res,), file=sys.stderr)
+    try:
+        if args.read<0:
+            print(s.recv(abs(args.read)))
+        else:
+            read = 0
+            while read<args.read:
+                _ = s.recv(args.read)
+                read+=len(_)
+                sys.stdout.write(_)
+    except KeyboardInterrupt:
+        pass
+    except Exception as e:
+        if not args.quiet:
+            print("Failed to receive bytes: %s" % e, file=sys.stderr)
+        sys.exit(2)
+
+    sys.exit(0)

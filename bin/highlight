@@ -1,0 +1,47 @@
+#!/usr/bin/perl -w
+# supply regex @ cmd line - script highlights that regex with the supplied colour
+# usage:
+# highlight <colour> <regex>
+#
+
+use strict;
+use Term::ANSIColor;
+my $line;
+my $searchstring;
+my $colour;
+
+
+if ( $#ARGV >= 1 )
+        {
+        $colour=$ARGV[0];
+        $searchstring=$ARGV[1];
+        }
+
+sub processline
+        {
+        $line=$_[0];
+        my $start;
+        my $match;
+        my $end;
+        if ($line =~ m/(.*?)($searchstring)(.*$)/ )
+                {
+                ($start,$match,$end) = ($1,$2,$3);
+                print color 'reset';
+                print "$start";
+                print color "bold $colour";
+                print $match;
+                print color 'reset';
+                processline($end . "\n");
+                }
+                else
+                {
+                print color 'reset';
+                print $line;
+                }
+        }
+
+while (<STDIN>)
+        {
+        $line=$_;
+        processline($line);
+        }

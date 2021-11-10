@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -eux
+
+for ns in $(kubectl get ns -o name | cut -d / -f 2); do
+    kubectl --namespace "${ns}" $@
+done
