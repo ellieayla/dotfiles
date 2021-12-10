@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+if [ "$1" == "-h" ]; then
+    echo "kubectl --context=.. get pod --all-namespaces -o json | $0"
+    exit 3
+fi
+
+jq -Cc '.items | group_by(.spec.nodeName) | map({ key: (.[0].spec.nodeName), pods: length, state: (group_by(.status.phase) | map({key:.[0].status.phase, value: length}) | from_entries) })[]'

@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+if [ -z "$1" ]; then
+    echo "Usage: watch --color -d $0 context [aksclustername]"
+    exit 3
+fi
+
+export KUBE_CONTEXT="$1"
+if [ -z "$2" ]; then
+    AKS_CLUSTER_NAME="$KUBE_CONTEXT"
+else
+    AKS_CLUSTER_NAME="$2"
+fi
+
+D=$(mktemp -d -t "watch-k8s-upgrade-$KUBE_CONTEXT")
+
+kubectl --context=$KUBE_CONTEXT get nodes -o json > "$D/nodes.json"
+kubectl --context=$KUBE_CONTEXT get pod --all-namespaces -o json > "$D/pods.json"
+
+jq '.items | group_by(.spec.nodeName) | map({ key: (.[0].spec.nodeName), value: {pods: length, state: (group_by(.status.phase) | map({key:.[0].status.phase, value: length}) | from_entries) }}) | from_entries' "$D/pods.json" > "$D/pods-summary-by-node.json"
+
+jq '.items | map({key: .metadata.name, value: {pool: .metadata.labels.agentpool, d: .metadata.creationTimestamp, ready: .status.conditions[] | select(.type=="Ready") | {status, at:.lastTransitionTime} }}) | from_entries' "$D/nodes.json" > "$D/node-summary.json"
+
+#jq -rs '.[0] * .[1] | to_entries[] | [.key, .value.pool, .value.d, "R:"+(.value.ready | @json), "P#:"+(.value.pods|@text), "PodState:"+(.value.state | @json)] | @tsv' "$D/node-summary.json" "$D/pods-summary-by-node.json"
+
+jq -Ccs '.[0] * .[1] | to_entries[]' $D/node-summary.json $D/pods-summary-by-node.json
+
+echo
+echo Pending pods
+cat $D/pods.json | jq -Cc '.items[] | select(.status.phase != "Running") | {ns:.metadata.namespace, n:.metadata.name, p:.status.phase, node:.spec.nodeName}'
+
+echo
+echo Node Pools
+az aks nodepool list -g prod-k8s --cluster-name "$AKS_CLUSTER_NAME" -o table
+
+echo
+echo Control Plane
+az aks show -g prod-k8s -n "$AKS_CLUSTER_NAME" -o table
+
+
+rm -r -- "$D"
