@@ -159,3 +159,17 @@ autoload -U +X bashcompinit && bashcompinit
 
 plugins=(git history kubectl)
 
+
+if [[ $OSTYPE == darwin* ]]; then
+    # This function means `cdf` changes directory to that of your frontmost Finder window.
+    # Based on https://twitter.com/QuinnyPig/status/1473112091808591874?s=20
+    cdf() {
+        target=`osascript -e 'tell application "Finder" to get POSIX path of (target of front Finder window as text)'`
+        if [ $? -eq 0 ]; then
+            cd "$target"
+        else
+            >&2 echo "No directory open in Finder"
+        fi
+    }
+fi
+
