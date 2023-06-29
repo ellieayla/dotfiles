@@ -159,7 +159,6 @@ autoload -U +X bashcompinit && bashcompinit
 
 plugins=(git history kubectl)
 
-
 if [[ $OSTYPE == darwin* ]]; then
     # This function means `cdf` changes directory to that of your frontmost Finder window.
     # Based on https://twitter.com/QuinnyPig/status/1473112091808591874?s=20
@@ -173,3 +172,10 @@ if [[ $OSTYPE == darwin* ]]; then
     }
 fi
 
+source /opt/homebrew/opt/chruby/share/chruby/chruby.sh
+source /opt/homebrew/opt/chruby/share/chruby/auto.sh
+chruby ruby-3.1.2
+
+
+# https://unix.stackexchange.com/questions/585344/why-is-permisson-denied-with-n-latest
+N_PREFIX=$HOME/.local
