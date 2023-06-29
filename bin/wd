@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-# Every second, run the command.
+# Every WATCH_INTERVAL seconds, run the command.
 exec > >(ds)
 
 while true; do
   /usr/bin/env bash -c "$@"
-  sleep 10
+  sleep ${WATCH_INTERVAL:-10}
 done
