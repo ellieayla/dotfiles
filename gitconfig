@@ -22,6 +22,7 @@
 
 [push]
 	default = current
+	autoSetupRemote = true
 [merge]
 	ff = only
 [pull]

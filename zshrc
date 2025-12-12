@@ -1,3 +1,5 @@
+#zmodload zsh/zprof
+
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
@@ -133,6 +135,7 @@ fi
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 alias diff="git diff"
+alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
 
 # https://github.com/pyenv/pyenv
 export PYENV_ROOT="$HOME/.pyenv"
@@ -151,13 +154,13 @@ autoload -U +X compinit && compinit
 
 
 # https://medium.com/@MyDiemHo/enable-azure-cli-autocomplete-in-oh-my-zsh-93e79019a20d
-autoload -U +X bashcompinit && bashcompinit
-[[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
-[[ -d "/usr/local/etc/bash_completion.d/" ]] && source /usr/local/etc/bash_completion.d/*
+# autoload -U +X bashcompinit && bashcompinit
+# [[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
+# [[ -d "/usr/local/etc/bash_completion.d/" ]] && source /usr/local/etc/bash_completion.d/*
 
 # NOTE you want to: kubectl completion zsh > /usr/local/etc/bash_completion.d/kubectl
 
-plugins=(git history kubectl)
+plugins=(git history)
 
 if [[ $OSTYPE == darwin* ]]; then
     # This function means `cdf` changes directory to that of your frontmost Finder window.
@@ -179,3 +182,10 @@ chruby ruby-3.1.2
 
 # https://unix.stackexchange.com/questions/585344/why-is-permisson-denied-with-n-latest
 N_PREFIX=$HOME/.local
+
+
+#zprof
+
+. "$HOME/.atuin/bin/env"
+
+eval "$(atuin init zsh)"

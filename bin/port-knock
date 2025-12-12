@@ -3,6 +3,8 @@ from __future__ import print_function
 import argparse
 import socket
 import sys
+import atexit
+
 
 
 def timeout(s):
@@ -35,6 +37,8 @@ if __name__ == "__main__":
 
     if args.timeout==-1:
         args.timeout=None
+
+    atexit.register(print)
 
     try:
         for res in socket.getaddrinfo(args.host[0], args.port[0], args.protocolnetwork, socket.SOCK_STREAM):
@@ -74,7 +78,8 @@ if __name__ == "__main__":
             while read<args.read:
                 _ = s.recv(args.read)
                 read+=len(_)
-                sys.stdout.write(_)
+                sys.stdout.write(str(_.decode()))
+                sys.stdout.flush()
     except KeyboardInterrupt:
         pass
     except Exception as e:

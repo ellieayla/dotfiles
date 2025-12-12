@@ -40,3 +40,4 @@ export PATH="$HOME/.poetry/bin:$PATH"
 # https://coderwall.com/p/-k_93g/mac-os-x-valueerror-unknown-locale-utf-8-in-python
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
+. "$HOME/.atuin/bin/env"
