@@ -1,0 +1,7 @@
+#!/bin/sh
+
+twurl -X POST /1.1/statuses/destroy/$1.json
+
+echo ""
+
+sleep 4
