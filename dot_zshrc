@@ -159,8 +159,9 @@ autoload -U +X compinit && compinit
 # [[ -d "/usr/local/etc/bash_completion.d/" ]] && source /usr/local/etc/bash_completion.d/*
 
 # NOTE you want to: kubectl completion zsh > /usr/local/etc/bash_completion.d/kubectl
+source <(kubectl completion zsh)
 
-plugins=(git history)
+plugins=(git history kubectl)
 
 if [[ $OSTYPE == darwin* ]]; then
     # This function means `cdf` changes directory to that of your frontmost Finder window.
