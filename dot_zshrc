@@ -136,6 +136,7 @@ fi
 
 alias diff="git diff"
 alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
+alias docker="/Applications/Docker.app/Contents/Resources/bin/docker"
 
 # https://github.com/pyenv/pyenv
 export PYENV_ROOT="$HOME/.pyenv"
@@ -161,7 +162,7 @@ autoload -U +X compinit && compinit
 # NOTE you want to: kubectl completion zsh > /usr/local/etc/bash_completion.d/kubectl
 source <(kubectl completion zsh)
 
-plugins=(git history kubectl)
+plugins=(git history kubectl ssh tailscale)
 
 if [[ $OSTYPE == darwin* ]]; then
     # This function means `cdf` changes directory to that of your frontmost Finder window.
@@ -180,6 +181,7 @@ source /opt/homebrew/opt/chruby/share/chruby/chruby.sh
 source /opt/homebrew/opt/chruby/share/chruby/auto.sh
 chruby ruby-3.1.2
 
+alias manimgl="uv run manimgl"
 
 # https://unix.stackexchange.com/questions/585344/why-is-permisson-denied-with-n-latest
 N_PREFIX=$HOME/.local
@@ -189,4 +191,5 @@ N_PREFIX=$HOME/.local
 
 . "$HOME/.atuin/bin/env"
 
+export PATH="$PATH:/usr/local/texlive/2025/bin/universal-darwin"
 eval "$(atuin init zsh)"
