@@ -1,1 +1,104 @@
+# repo file
 README.md
+
+# private config we never want to publish
+/.kube/config
+/.config/gh/hosts.yml
+.viminfo
+/.ssh/*
+/.sentryclirc
+/.ipython/
+/.mailmap
+/.gk/  # gitlens
+/.mitmproxy
+/.privatewine
+
+# cache doesn't need to be stored
+/.cache
+/.kube/cache/
+/.bundle/cache/*
+/.config/xbuild/pkgconfig-cache-2.xml
+/.cargo/registry/
+/.dvdcss
+/.matplotlib
+
+# state files
+/.config/gh/state.yml
+.config/chezmoi/chezmoistate.boltdb
+.config/menus/applications-merged
+
+# unused bits written by atuin
+.config/fish/conf.d/atuin.env.fish
+
+# logseq config
+!.logseq/config/config.edn
+!.logseq/preferences.json
+.logseq/git
+.logseq/graphs
+.logseq/plugins
+.logseq/
+
+# config we don't care about
+/.vscode
+.config/gtk-2.0/gtkfilechooser.ini
+/.android
+.DS_Store
+.CFUserTextEncoding
+.bash-preexec.sh
+/.swiftpm
+/.cups
+/.actrc
+/.IdentityService
+.mplayer
+
+# apps
+/.pyenv
+/.rubies
+/.atuin
+/.local/
+/.oh-my-zsh/
+
+# cargo-dist updater receipts
+.config/atuin/atuin-receipt.json
+.config/uv/uv-receipt.json
+
+/.gem
+# debug junk
+/.zcompdump*
+/.zsh_sessions
+
+# history files for various repls
+/.bash_history
+/.zsh_history
+/.python_history
+/.pdbhistory
+/.sqlite_history
+/.lesshst
+/.node_repl_history
+
+
+# old dotfiles directory
+/.dotfiles
+
+# ignore huge swaths of home directory
+/Applications/
+/Desktop/
+/Downloads/
+/Documents/
+/GNS3/
+/Library/
+/Movies/
+/Music/
+/Pictures/
+/Public/
+/workspace/
+/go/
+/.Trash
+
+/.docker/
+
+# .config directories that aren't actually config
+/.config/iterm2/
+
+# can't self-manage
+.config/chezmoi/chezmoi.toml
