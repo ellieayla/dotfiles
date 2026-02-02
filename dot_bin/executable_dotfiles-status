@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+(set -x; chezmoi diff --reverse)
+(set -x; chezmoi status)
+(set -x; chezmoi verify || echo "Files need to be checked!")
+
+echo "Could: chezmoi re-add / add"
+
