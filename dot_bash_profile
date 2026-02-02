@@ -4,7 +4,7 @@ function diff {
      colordiff -u "$@" | less -RF
 }
 
-eval "$(pyenv init -)"
+#eval "$(pyenv init -)"
 
 if [ -f ~/.git-completion.bash ]; then
   . ~/.git-completion.bash

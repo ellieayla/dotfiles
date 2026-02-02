@@ -139,16 +139,16 @@ alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
 alias docker="/Applications/Docker.app/Contents/Resources/bin/docker"
 
 # https://github.com/pyenv/pyenv
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-export PATH="$HOME/.pyenv/shims:$PATH"
+#export PYENV_ROOT="$HOME/.pyenv"
+#export PATH="$PATH:$PYENV_ROOT/bin"
+#export PATH="$PATH:$HOME/.pyenv/shims"
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh" || true
 
-if command -v pyenv 1>/dev/null 2>&1; then
-  eval "$(pyenv init -)"
-  eval "$(pyenv virtualenv-init -)"
-fi
+#if command -v pyenv 1>/dev/null 2>&1; then
+#  eval "$(pyenv init -)"
+#  eval "$(pyenv virtualenv-init -)"
+#fi
 
 # https://github.com/zsh-users/antigen/issues/701
 autoload -U +X compinit && compinit
@@ -193,3 +193,7 @@ N_PREFIX=$HOME/.local
 
 export PATH="$PATH:/usr/local/texlive/2025/bin/universal-darwin"
 eval "$(atuin init zsh)"
+
+
+# add brew to end of PATH
+export PATH="$PATH:/opt/homebrew/bin"
