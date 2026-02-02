@@ -3,32 +3,48 @@ README.md
 
 # private config we never want to publish
 /.kube/config
+/.kube/
 /.config/gh/hosts.yml
 .viminfo
+!.ssh/config
 /.ssh/*
+/.ssh/
 /.sentryclirc
 /.ipython/
 /.mailmap
 /.gk/  # gitlens
 /.mitmproxy
 /.privatewine
+.config/mapillary/configs/*
+.config/GNS3
+
 
 # cache doesn't need to be stored
 /.cache
 /.kube/cache/
-/.bundle/cache/*
+/.bundle/cache
+/.bundle/
 /.config/xbuild/pkgconfig-cache-2.xml
-/.cargo/registry/
+/.cargo/registry/*
+.cargo/registry
+.cargo/
+
 /.dvdcss
 /.matplotlib
+.npm/_cacache
 
 # state files
 /.config/gh/state.yml
 .config/chezmoi/chezmoistate.boltdb
 .config/menus/applications-merged
+.config/menus
+.config/chezmoi
+.npm/_update-notifier-last-checked
+.npm/_logs
 
 # unused bits written by atuin
 .config/fish/conf.d/atuin.env.fish
+.config/fish
 
 # logseq config
 !.logseq/config/config.edn
@@ -41,6 +57,7 @@ README.md
 # config we don't care about
 /.vscode
 .config/gtk-2.0/gtkfilechooser.ini
+.config/gtk-2.0
 /.android
 .DS_Store
 .CFUserTextEncoding
@@ -50,17 +67,25 @@ README.md
 /.actrc
 /.IdentityService
 .mplayer
-
+.config/xbuild
+.mono
+.config/mapillary/
 # apps
 /.pyenv
 /.rubies
 /.atuin
 /.local/
 /.oh-my-zsh/
+.npm/node-sass
+.npm
+.config/StardewValley/default_options
+.config/StardewValley/startup_preferences
+.config/StardewValley
 
 # cargo-dist updater receipts
 .config/atuin/atuin-receipt.json
 .config/uv/uv-receipt.json
+.config/uv/
 
 /.gem
 # debug junk
@@ -102,3 +127,6 @@ README.md
 
 # can't self-manage
 .config/chezmoi/chezmoi.toml
+
+# saves
+.config/StardewValley/Saves
