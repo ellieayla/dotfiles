@@ -27,7 +27,7 @@ GPG_TTY=$(tty)
 #PROMPT_COMMAND="$PROMPT_COMMAND; history -a; history -r"
 
 # https://unix.stackexchange.com/questions/1288/preserve-bash-history-in-multiple-terminal-windows
-HISTCONTROL=ignoredups:erasedups  
+HISTCONTROL=ignoredups:erasedups
 shopt -s histappend
 
 # Setting PATH for Python 3.8
