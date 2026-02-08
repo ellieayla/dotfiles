@@ -77,7 +77,7 @@ source $ZSH/oh-my-zsh.sh
 HISTFILE=${ZDOTDIR:-$HOME}/.zsh_history
 
 # expire duplicates first
-setopt HIST_EXPIRE_DUPS_FIRST 
+setopt HIST_EXPIRE_DUPS_FIRST
 # do not store duplications
 setopt HIST_IGNORE_DUPS
 #ignore duplicates when searching
@@ -194,6 +194,9 @@ N_PREFIX=$HOME/.local
 export PATH="$PATH:/usr/local/texlive/2025/bin/universal-darwin"
 eval "$(atuin init zsh)"
 
+if [ -e ~/.bin/dotfiles-status ]; then
+  ~/.bin/dotfiles-status auto
+fi
 
 # add brew to end of PATH
 export PATH="$PATH:/opt/homebrew/bin"

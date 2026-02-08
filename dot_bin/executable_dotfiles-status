@@ -1,8 +1,53 @@
 #!/usr/bin/env bash
 
-(set -x; chezmoi diff --reverse)
-(set -x; chezmoi status)
-(set -x; chezmoi verify || echo "Files need to be checked!")
 
-echo "Could: chezmoi re-add / add"
+CHECKFILE=~/.config/chezmoi/dotfiles-status.check
+MINUTES=10
+if [ "$1" == "auto" ]; then
+	if [ -e $CHECKFILE ]; then
+		# file exists
+		if find $CHECKFILE -type f -mmin +$MINUTES | grep --quiet .; then
+			# file modified more than $MINUTES ago
+			:
+		else
+			# file newer than $MINUTES
+			# just quietly don't bother checking
+			# "recently modified in last $MINUTES minutes, just exit"
+			exit 1
+		fi
+		# "file is older than $MINUTES minutes"
+	fi
+fi
 
+touch $CHECKFILE
+
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
+function red() {
+	echo -e "$RED$1$NC"
+}
+
+function indent() {
+	awk '{print "\t"$0}'
+}
+
+
+chezmoi verify
+if [ "$?" -ne 0 ]; then
+	# not all target home directory files match the source repo
+	red "Changes to managed dotfiles:  (chezmoi status)"
+	echo " -> chezmoi diff --reverse"
+	echo " -> chezmoi re-add [file]"
+	echo " -> chezmoi re-add --interactive"
+	echo " -> chezmoi apply --interactive"
+	chezmoi status | indent
+	echo
+fi
+
+if [ "$(chezmoi unmanaged)" != "" ]; then
+	red "Unmanaged dotfiles: (chezmoi unmanaged)"
+	echo " -> chezmoi add"
+	echo " -> $EDITOR .local/share/chezmoi/.chezmoiignore"
+	chezmoi unmanaged | indent
+fi

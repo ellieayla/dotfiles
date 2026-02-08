@@ -81,11 +81,13 @@ README.md
 .config/StardewValley/default_options
 .config/StardewValley/startup_preferences
 .config/StardewValley
+.azure
+.config/lazpaint/
+.config/lazpaint.cfg
 
 # cargo-dist updater receipts
 .config/atuin/atuin-receipt.json
 .config/uv/uv-receipt.json
-.config/uv/
 
 /.gem
 # debug junk
