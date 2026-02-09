@@ -1,5 +1,6 @@
 [core]
 	editor = mate -w
+    attributesFile = ~/.gitattributes
 	excludesfile = ~/.gitignore_global
 	pager = less -FXR
 [user]
@@ -36,3 +37,9 @@
 
 [mailmap]
     file = ~/.mailmap
+
+[diff "ical"]
+    textconv = uv tool run icalendar
+
+[diff "json"]
+    textconv = jq --color-output --sort-keys .

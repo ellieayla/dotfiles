@@ -1,1 +1,5 @@
 *.py    diff=python
+
+*.ical  diff=ical
+*.ics   diff=ical
+*.json  diff=json

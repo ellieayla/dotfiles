@@ -9,3 +9,8 @@ __pycache__/
 
 # Mac
 .DS_Store
+
+# So many calendar projects
+dates.ical
+dates.ics
+dates.json
