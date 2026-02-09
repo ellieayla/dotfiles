@@ -1,5 +1,5 @@
 #!/bin/bash
 
 
-GIST=$(gh gist list --secret --filter "grocery list" | awk '{print $1}')
+GIST=$(~/.local/bin/gh gist list --secret --filter "grocery list" | awk '{print $1}')
 cat | ~/.local/bin/gh gist edit "$GIST" --filename grocery-list.txt -
