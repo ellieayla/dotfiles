@@ -1,45 +1,44 @@
 [core]
-	editor = mate -w
+    editor = mate -w
     attributesFile = ~/.gitattributes
-	excludesfile = ~/.gitignore_global
-	pager = less -FXR
+    excludesfile = ~/.gitignore_global
+    pager = less -FXR
 [user]
-	name = ellieayla
-	email = 1447600+me@users.noreply.github.com
-	signingkey = 3CD8BB6DA5B1CC1A
+    name = ellieayla
+    email = 1447600+me@users.noreply.github.com
+    signingkey = 3CD8BB6DA5B1CC1A
 [alias]
-  graph = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
-  tag-builds = "!~/workspace/git-tag-builds/.env/bin/git-tag-builds"
-  cb = rev-parse --abbrev-ref HEAD
-  git = !exec git
+    graph = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+    tag-builds = "!~/workspace/git-tag-builds/.env/bin/git-tag-builds"
+    cb = rev-parse --abbrev-ref HEAD
+    git = !exec git
 
-  log-commit-message-size = "!echo 'commit,date,email,bytes';git rev-list --all | xargs -I @ sh -c 'who=$(git show --format="%h,%as,\"%ae\"," -s "@"); size=$(git show -s --format=%B @ | wc -c); echo "$who"$size'"
+    log-commit-message-size = "!echo 'commit,date,email,bytes';git rev-list --all | xargs -I @ sh -c 'who=$(git show --format="%h,%as,\"%ae\"," -s "@"); size=$(git show -s --format=%B @ | wc -c); echo "$who"$size'"
 
-  hotfiles = "!git log --format=format: --name-only | egrep -v '^$' | sort | uniq -c | sort -rg | head -10"
-  bl = for-each-ref --sort=-committerdate --format='%(HEAD) %(color:red)%(objectname:short)%(color:reset) - %(color:yellow)(%(refname:short))%(color:reset) %(color:green)(%(authordate:relative))%(color:reset) %(color:bold blue)<%(authorname)>%(color:reset)' refs/heads
-  cleanup-local-branches = "!git branch --merged main | grep -v '^*' | grep -v main | xargs git branch -d"
-  unpushed = log --branches --not --remotes --no-walk --decorate --oneline
-  local-branches = !git branch -vv | cut -c 3- | awk '$3 !~/\\[/ { print $1 }'
+    hotfiles = "!git log --format=format: --name-only | egrep -v '^$' | sort | uniq -c | sort -rg | head -10"
+    bl = for-each-ref --sort=-committerdate --format='%(HEAD) %(color:red)%(objectname:short)%(color:reset) - %(color:yellow)(%(refname:short))%(color:reset) %(color:green)(%(authordate:relative))%(color:reset) %(color:bold blue)<%(authorname)>%(color:reset)' refs/heads
+    cleanup-local-branches = "!git branch --merged main | grep -v '^*' | grep -v main | xargs git branch -d"
+    unpushed = log --branches --not --remotes --no-walk --decorate --oneline
+    local-branches = !git branch -vv | cut -c 3- | awk '$3 !~/\\[/ { print $1 }'
 
 [push]
-	default = current
-	autoSetupRemote = true
+    default = current
+    autoSetupRemote = true
 [merge]
-	ff = only
+    ff = only
 [pull]
-	ff = only
+    ff = only
 [credential]
-	helper = osxkeychain
+    helper = osxkeychain
 [init]
-	defaultBranch = main
+    defaultBranch = main
 [log]
-	date = iso-local
+    date = iso-local
 
 [mailmap]
     file = ~/.mailmap
 
 [diff "ical"]
     textconv = uv tool run icalendar
-
 [diff "json"]
     textconv = jq --color-output --sort-keys .
