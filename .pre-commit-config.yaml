@@ -15,7 +15,7 @@ repos:
   - id: detect-secrets
 
 - repo: https://github.com/ellieayla/only-whitespace-hook
-  rev: v0.1.4
+  rev: v0.1.5
   hooks:
   - id: default-commit-message
   - id: honest-commit-message
