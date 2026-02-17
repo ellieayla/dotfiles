@@ -29,9 +29,9 @@ function red() {
 }
 
 function indent() {
+
 	awk '{print "\t"$0}'
 }
-
 
 chezmoi verify
 if [ "$?" -ne 0 ]; then
@@ -41,7 +41,7 @@ if [ "$?" -ne 0 ]; then
 	echo " -> chezmoi re-add [file]"
 	echo " -> chezmoi re-add --interactive"
 	echo " -> chezmoi apply --interactive"
-	chezmoi status | indent
+	chezmoi status --path-style absolute | indent
 	echo
 fi
 
@@ -49,5 +49,5 @@ if [ "$(chezmoi unmanaged)" != "" ]; then
 	red "Unmanaged dotfiles: (chezmoi unmanaged)"
 	echo " -> chezmoi add"
 	echo " -> $EDITOR .local/share/chezmoi/.chezmoiignore"
-	chezmoi unmanaged | indent
+	chezmoi unmanaged --path-style absolute | indent
 fi
