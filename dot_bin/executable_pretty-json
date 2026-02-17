@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+if ! command -v hjson-cli 1>/dev/null 2>&1; then
+    echo "Install hjson-cli with: go install github.com/hjson/hjson-go/hjson-cli@latest" > /dev/stderr
+    cat "$1"
+    exit
+fi
+if ! command -v jq 1>/dev/null 2>&1; then
+    echo "Install jq with: brew install jq" > /dev/stderr
+    cat "$1"
+fi
+
+~/go/bin/hjson-cli -j "$1" | jq --color-output --sort-keys .

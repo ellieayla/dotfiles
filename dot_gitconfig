@@ -41,4 +41,4 @@
 [diff "ical"]
     textconv = uv tool run icalendar
 [diff "json"]
-    textconv = jq --color-output --sort-keys .
+    textconv = pretty-json
