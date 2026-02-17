@@ -28,20 +28,23 @@ function red() {
 	echo -e "$RED$1$NC"
 }
 
-function indent() {
+function replace_home() {
+    python3 -c "import sys; from os.path import expanduser; home=expanduser('~'); [print(_.replace(home, '~'), end='') for _ in sys.stdin.readlines()]"
+}
 
+function indent() {
 	awk '{print "\t"$0}'
 }
 
 chezmoi verify
 if [ "$?" -ne 0 ]; then
 	# not all target home directory files match the source repo
-	red "Changes to managed dotfiles:  (chezmoi status)"
+	red "Changes to managed dotfiles: (chezmoi status)"
 	echo " -> chezmoi diff --reverse"
 	echo " -> chezmoi re-add [file]"
 	echo " -> chezmoi re-add --interactive"
 	echo " -> chezmoi apply --interactive"
-	chezmoi status --path-style absolute | indent
+	chezmoi status --path-style absolute | replace_home | indent
 	echo
 fi
 
@@ -49,5 +52,5 @@ if [ "$(chezmoi unmanaged)" != "" ]; then
 	red "Unmanaged dotfiles: (chezmoi unmanaged)"
 	echo " -> chezmoi add"
 	echo " -> $EDITOR .local/share/chezmoi/.chezmoiignore"
-	chezmoi unmanaged --path-style absolute | indent
+	chezmoi unmanaged --path-style absolute | replace_home | indent
 fi
