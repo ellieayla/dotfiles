@@ -1,0 +1,99 @@
+#!/usr/bin/env python3
+# /// script
+# requires-python = ">=3.9"
+# dependencies = []
+# ///
+
+from __future__ import annotations
+
+from pathlib import Path
+from tempfile import TemporaryDirectory
+from typing import Iterable
+import os
+import subprocess
+import sys
+import zipfile
+
+if not sys.version_info > (3, 9):
+    raise RuntimeError("Requires at least python 3.9")
+
+MUTUALLY_EXCLUSIVE_DIFF_OUTPUT_OPTIONS = (
+    '-C', '--context',
+    '-c',
+    '-D', '--ifdef',
+    '-e', '--ed',
+    '-f', '--forward-ed',
+    '-n',
+    '-q', '--brief',
+    '-U', '--unified',
+    '-u',
+    '--version',
+    '-y', '--side-by-side',
+)
+
+
+def zipdiff(command_arguments: Iterable[str], source_1: Path, source_2: Path) -> int:
+    """
+    Decompress the two zipfiles in a temporary directory,
+    and call an external diff program,
+    passing along all command line arguments.
+
+    Writes to stdout.
+
+    Returns the exit code of the external diff program (or 2 if not found).
+    """
+
+    with TemporaryDirectory(prefix=__name__) as tmpdir_name:
+        dir1 = Path(tmpdir_name) / (source_1.name or "a")
+        dir2 = Path(tmpdir_name) / (source_2.name or "b")
+
+        if dir1 == dir2:  # same name in different directories
+            dir1 = dir1 / "a"
+            dir2 = dir2 / "b"
+
+        zipfile.ZipFile(file=source_1).extractall(path=dir1)
+        zipfile.ZipFile(file=source_2).extractall(path=dir2)
+
+        try:
+            result: subprocess.CompletedProcess[bytes] = subprocess.run(
+                [*command_arguments, '--', dir1.relative_to(tmpdir_name), dir2.relative_to(tmpdir_name)],
+                cwd=tmpdir_name,
+            )
+            return result.returncode
+
+        except FileNotFoundError as e:
+            print(f"Failed to open file: {e}", file=sys.stderr)
+            return 2
+
+
+def main() -> int:
+    """Parse arguments, apply defaults, and call zipdiff()"""
+    from argparse import ArgumentParser, RawDescriptionHelpFormatter
+    import shlex
+
+    def dump_diff_program_help(*_) -> str:
+        return "Additional arguments passed to external diff:\n\n" + \
+            subprocess.check_output(["diff", "--help"], encoding='utf-8')
+
+    p = ArgumentParser(
+        epilog=property(fget=dump_diff_program_help),  # type: ignore[arg-type]
+        formatter_class=RawDescriptionHelpFormatter,
+    )
+    p.add_argument("file1", type=Path, metavar="file1.zip")
+    p.add_argument("file2", type=Path, metavar="file2.zip")
+    p.add_argument("--external-diff", type=str, metavar="/usr/bin/diff", help="Path to alternate diff binary (GIT_EXTERNAL_DIFF)", default=os.environ.get("GIT_EXTERNAL_DIFF", "diff"))
+    arguments, extras = p.parse_known_args()
+
+    # these options might be already present, that's fine, just add them and later ones win
+    default_diff_arguments = ["--recursive", "--report-identical-files", "--color=auto"]
+    diff_arguments = shlex.split(s=arguments.external_diff) + default_diff_arguments + extras
+
+    # passing --unified will only succeed if none any of the diff output options are specified.
+    if not any([_ in diff_arguments for _ in MUTUALLY_EXCLUSIVE_DIFF_OUTPUT_OPTIONS]):
+        diff_arguments.append("--unified")  # default
+
+    return zipdiff(diff_arguments, arguments.file1, arguments.file2)
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())
