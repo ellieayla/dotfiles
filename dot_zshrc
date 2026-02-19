@@ -195,7 +195,7 @@ export PATH="$PATH:/usr/local/texlive/2025/bin/universal-darwin"
 eval "$(atuin init zsh)"
 
 if [ -e ~/.bin/dotfiles-status ]; then
-  ~/.bin/dotfiles-status auto
+  : | ~/.bin/dotfiles-status auto
 fi
 
 # add brew to end of PATH
