@@ -48,8 +48,8 @@ def zipdiff(command_arguments: Iterable[str], source_1: Path, source_2: Path) ->
         dir2 = Path(tmpdir_name) / (source_2.name or "b")
 
         if dir1 == dir2:  # same name in different directories
-            dir1 = dir1 / "a"
-            dir2 = dir2 / "b"
+            dir1 = Path(tmpdir_name) / "a"
+            dir2 = Path(tmpdir_name) / "b"
 
         zipfile.ZipFile(file=source_1).extractall(path=dir1)
         zipfile.ZipFile(file=source_2).extractall(path=dir2)
@@ -72,8 +72,8 @@ def main() -> int:
     import shlex
 
     def dump_diff_program_help(*_) -> str:
-        return "Additional arguments passed to external diff:\n\n" + \
-            subprocess.check_output(["diff", "--help"], encoding='utf-8')
+        return ("Additional arguments passed to external diff:\n\n"
+            + subprocess.check_output(["diff", "--help"], encoding='utf-8'))
 
     p = ArgumentParser(
         epilog=property(fget=dump_diff_program_help),  # type: ignore[arg-type]
