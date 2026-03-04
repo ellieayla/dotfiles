@@ -72,6 +72,7 @@ README.md
 .config/mapillary/
 # apps
 /.pyenv
+/.rbenv
 /.rubies
 /.atuin
 /.local/

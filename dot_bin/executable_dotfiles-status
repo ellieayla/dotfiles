@@ -51,6 +51,6 @@ fi
 if [ "$(chezmoi unmanaged)" != "" ]; then
 	red "Unmanaged dotfiles: (chezmoi unmanaged)"
 	echo " -> chezmoi add"
-	echo " -> $EDITOR .local/share/chezmoi/.chezmoiignore"
+	echo " -> $EDITOR ~/.local/share/chezmoi/.chezmoiignore"
 	chezmoi unmanaged --path-style absolute | replace_home | indent
 fi
