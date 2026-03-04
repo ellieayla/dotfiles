@@ -1,18 +1,32 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # /// script
 # requires-python = ">=3.9"
 # dependencies = []
 # ///
 
+"""
+Recursively diff a pair of zip files, or a zip file against a directory.
+Decompresses into a temporary directory and calls external diff program.
+
+Accepts - as stdin.
+
+If passed two normal files/directories,
+they'll be passed as-is to the external diff program.
+
+Recommended arguments in alias: --color=auto --report-identical-files --new-file
+"""
+
 from __future__ import annotations
 
-from pathlib import Path
-from tempfile import TemporaryDirectory
-from typing import Iterable
 import os
+import shlex
 import subprocess
 import sys
 import zipfile
+from argparse import ArgumentParser
+from collections.abc import Iterable
+from pathlib import Path
+from tempfile import TemporaryDirectory
 
 if not sys.version_info > (3, 9):
     raise RuntimeError("Requires at least python 3.9")
@@ -32,12 +46,30 @@ MUTUALLY_EXCLUSIVE_DIFF_OUTPUT_OPTIONS = (
 )
 
 
+def maybe_extract_and_get_source_directory(source_zipfile: Path, tmpdir_name: str, into: Path) -> Path:
+    """
+    If the source path is a zip file, decompress it and return the new directory relative to the tmpdir.
+    Otherwise, return the absolute path to the source file.
+
+    The resulting path will be passed to the external diff program, which hopefully knows how to deal with it.
+    """
+    if source_zipfile == Path("-"):
+        return Path("-")  # stdin
+    try:
+        zipfile.ZipFile(file=source_zipfile).extractall(path=into)
+        return into.relative_to(tmpdir_name)
+    except (IsADirectoryError, zipfile.BadZipFile, FileNotFoundError):
+        # not a zip file; try to pass it through to diff directly and hope for the best
+        return source_zipfile.absolute()
+
+
 def zipdiff(command_arguments: Iterable[str], source_1: Path, source_2: Path) -> int:
     """
     Decompress the two zipfiles in a temporary directory,
     and call an external diff program,
     passing along all command line arguments.
 
+    Reads from stdin if a path is -
     Writes to stdout.
 
     Returns the exit code of the external diff program (or 2 if not found).
@@ -51,13 +83,15 @@ def zipdiff(command_arguments: Iterable[str], source_1: Path, source_2: Path) ->
             dir1 = Path(tmpdir_name) / "a"
             dir2 = Path(tmpdir_name) / "b"
 
-        zipfile.ZipFile(file=source_1).extractall(path=dir1)
-        zipfile.ZipFile(file=source_2).extractall(path=dir2)
+        dir1 = maybe_extract_and_get_source_directory(source_1, tmpdir_name, dir1)
+        dir2 = maybe_extract_and_get_source_directory(source_2, tmpdir_name, dir2)
 
         try:
+            print("Running diff:", *command_arguments, dir1, dir2, tmpdir_name)
             result: subprocess.CompletedProcess[bytes] = subprocess.run(
-                [*command_arguments, '--', dir1.relative_to(tmpdir_name), dir2.relative_to(tmpdir_name)],
+                [*command_arguments, '--', dir1, dir2],
                 cwd=tmpdir_name,
+                stdin=sys.stdin,
             )
             return result.returncode
 
@@ -68,29 +102,35 @@ def zipdiff(command_arguments: Iterable[str], source_1: Path, source_2: Path) ->
 
 def main() -> int:
     """Parse arguments, apply defaults, and call zipdiff()"""
-    from argparse import ArgumentParser, RawDescriptionHelpFormatter
-    import shlex
 
-    def dump_diff_program_help(*_) -> str:
-        return ("Additional arguments passed to external diff:\n\n"
-            + subprocess.check_output(["diff", "--help"], encoding='utf-8'))
-
-    p = ArgumentParser(
-        epilog=property(fget=dump_diff_program_help),  # type: ignore[arg-type]
-        formatter_class=RawDescriptionHelpFormatter,
-    )
+    p = ArgumentParser(add_help=False, description=__doc__)
     p.add_argument("file1", type=Path, metavar="file1.zip")
     p.add_argument("file2", type=Path, metavar="file2.zip")
-    p.add_argument("--external-diff", type=str, metavar="/usr/bin/diff", help="Path to alternate diff binary (GIT_EXTERNAL_DIFF)", default=os.environ.get("GIT_EXTERNAL_DIFF", "diff"))
+    p.add_argument("--no-recursive", action="store_true", help="By default %(prog)s uses --recursive. Don't.")
+    p.add_argument("--no-unified", action="store_true", help="By default %(prog)s uses --unified. Don't.")
+    p.add_argument("--external-diff", type=str, metavar="D",
+                   help="Path to alternate diff binary (env:GIT_EXTERNAL_DIFF) (default %(default)s)",
+                   default=os.environ.get("GIT_EXTERNAL_DIFF", "diff"))
+    p.add_argument("-h", "--help", action="store_true", help="Show this help message.")
     arguments, extras = p.parse_known_args()
 
-    # these options might be already present, that's fine, just add them and later ones win
-    default_diff_arguments = ["--recursive", "--report-identical-files", "--color=auto"]
-    diff_arguments = shlex.split(s=arguments.external_diff) + default_diff_arguments + extras
+    if arguments.help:
+        # seperated out so "diff --help" can be emitted too
+        p.print_help()
+        if arguments.external_diff and Path(arguments.external_diff).exists():
+            print("Additional arguments passed to external diff:")
+            print(subprocess.check_output([arguments.external_diff, "--help"], encoding="utf-8"))
+        p.exit()
 
-    # passing --unified will only succeed if none any of the diff output options are specified.
-    if not any([_ in diff_arguments for _ in MUTUALLY_EXCLUSIVE_DIFF_OUTPUT_OPTIONS]):
-        diff_arguments.append("--unified")  # default
+    diff_arguments = shlex.split(s=arguments.external_diff) + extras
+
+    if not arguments.no_recursive and "--recursive" not in diff_arguments:
+        diff_arguments.append("--recursive")
+
+    if not arguments.no_unified and "--unified" not in diff_arguments:  # don't add twice
+        # passing --unified will only succeed if none any of the diff output options are specified.
+        if not any([_ in diff_arguments for _ in MUTUALLY_EXCLUSIVE_DIFF_OUTPUT_OPTIONS]):
+            diff_arguments.append("--unified")
 
     return zipdiff(diff_arguments, arguments.file1, arguments.file2)
 

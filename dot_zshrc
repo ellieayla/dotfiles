@@ -135,6 +135,7 @@ fi
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 alias diff="/usr/bin/diff --color=auto --unified --report-identical-files"
+alias zipdiff="~/.bin/zipdiff --color=auto --unified --report-identical-files"
 alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
 alias docker="/Applications/Docker.app/Contents/Resources/bin/docker"
 
@@ -177,9 +178,12 @@ if [[ $OSTYPE == darwin* ]]; then
     }
 fi
 
+export PATH="/Users/ellie/.rbenv/versions/3.3.6/bin:$PATH"
+
 source /opt/homebrew/opt/chruby/share/chruby/chruby.sh
 source /opt/homebrew/opt/chruby/share/chruby/auto.sh
 chruby ruby-3.1.2
+
 
 alias manimgl="uv run manimgl"
 
