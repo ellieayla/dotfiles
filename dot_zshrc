@@ -138,6 +138,7 @@ alias diff="/usr/bin/diff --color=auto --unified --report-identical-files"
 alias zipdiff="~/.bin/zipdiff --color=auto --unified --report-identical-files"
 alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
 alias docker="/Applications/Docker.app/Contents/Resources/bin/docker"
+alias sl=ls
 
 # https://github.com/pyenv/pyenv
 #export PYENV_ROOT="$HOME/.pyenv"
