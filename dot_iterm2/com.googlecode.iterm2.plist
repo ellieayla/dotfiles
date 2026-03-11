@@ -372,6 +372,8 @@
 			<string>Default</string>
 			<key>Disable Window Resizing</key>
 			<true/>
+			<key>Enable Triggers in Interactive Apps</key>
+			<false/>
 			<key>Flashing Bell</key>
 			<false/>
 			<key>Foreground Color</key>
@@ -571,7 +573,44 @@
 			<key>Transparency</key>
 			<integer>0</integer>
 			<key>Triggers</key>
-			<array/>
+			<array>
+				<dict>
+					<key>action</key>
+					<string>iTermHyperlinkTrigger</string>
+					<key>contentregex</key>
+					<string></string>
+					<key>disabled</key>
+					<integer>0</integer>
+					<key>matchType</key>
+					<integer>0</integer>
+					<key>name</key>
+					<string>Github Issue/PR</string>
+					<key>parameter</key>
+					<string>https://github.com/\1/issues/\2</string>
+					<key>partial</key>
+					<false/>
+					<key>regex</key>
+					<string>\b([a-zA-Z\d](?:[a-zA-Z\d\.-]|-(?=[a-zA-Z\d\.-])){0,38}/[a-zA-Z0-9\.-]+)\s+#(\d+)\b</string>
+				</dict>
+				<dict>
+					<key>action</key>
+					<string>iTermHyperlinkTrigger</string>
+					<key>contentregex</key>
+					<string></string>
+					<key>disabled</key>
+					<integer>0</integer>
+					<key>matchType</key>
+					<integer>0</integer>
+					<key>name</key>
+					<string>Github Repo Tag</string>
+					<key>parameter</key>
+					<string>https://github.com/\1/releases/tag/\2</string>
+					<key>partial</key>
+					<false/>
+					<key>regex</key>
+					<string>\b([a-z\d](?:[a-z\d\.]|-(?=[a-z\d])){0,38}/[a-z\d_\.-]+)@(v?[0-9\.]+)\b</string>
+				</dict>
+			</array>
 			<key>Triggers Use Interpolated Strings</key>
 			<false/>
 			<key>Unlimited Scrollback</key>

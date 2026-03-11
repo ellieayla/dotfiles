@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+uv tool run pytest-watcher --patterns '*.yaml,*.rego' --ignore '.git' --delay 0.2 --now --notify-on-failure --runner pre-commit . -- run --all-files
