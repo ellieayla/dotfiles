@@ -1,0 +1,24 @@
+{{ if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+# after templating, this file only has content when os=darwin
+# brew is normally installed by https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
+
+if command -v brew; then
+    exit 0
+fi
+
+echo "Trying to install Brew"
+
+t=$(mktemp -d)
+
+# latest
+gh release download --repo "Homebrew/brew" --dir "$t" --pattern "Homebrew.pkg"
+gh attestation verify "$t/Homebrew.pkg" --repo "Homebrew/brew"
+
+installer -pkg Homebrew.pkg -target ~
+
+rm "$t/Homebrew.pkg"
+
+rmdir "$t"
+
+{{ end -}}

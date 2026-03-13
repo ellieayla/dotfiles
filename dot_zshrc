@@ -181,7 +181,17 @@ fi
 
 export PATH="/Users/ellie/.rbenv/versions/3.3.6/bin:$PATH"
 
-eval "$(/opt/homebrew/bin/brew shellenv)"
+# /opt/homebrew/bin/brew shellenv but without /usr/libexec/path_helper (I'll set it myself).
+export HOMEBREW_PREFIX="/opt/homebrew";
+export HOMEBREW_CELLAR="/opt/homebrew/Cellar";
+export HOMEBREW_REPOSITORY="/opt/homebrew";
+fpath[1,0]="/opt/homebrew/share/zsh/site-functions";
+[ -z "${MANPATH-}" ] || export MANPATH=":${MANPATH#:}";
+export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}";
+
+# add brew'd binaries to the end of PATH
+export PATH="$PATH:$HOMEBREW_PREFIX/bin"
+
 
 source $HOMEBREW_PREFIX/opt/chruby/share/chruby/chruby.sh
 source $HOMEBREW_PREFIX/opt/chruby/share/chruby/auto.sh
@@ -204,6 +214,3 @@ eval "$(atuin init zsh)"
 if [ -e ~/.bin/dotfiles-status ]; then
   : | ~/.bin/dotfiles-status auto
 fi
-
-# add brew'd binaries to the end of PATH
-export PATH="$PATH:$HOMEBREW_PREFIX/bin"

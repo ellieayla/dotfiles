@@ -19,3 +19,13 @@ repos:
   hooks:
   - id: default-commit-message
   - id: honest-commit-message
+
+- repo: local
+  hooks:
+  - id: chezmoi-template
+    name: Verify chezmoi templates
+    entry: ./check-templates.sh
+    require_serial: true
+    files: '.*.tmpl'
+    language: system
+    stages: [pre-commit]
