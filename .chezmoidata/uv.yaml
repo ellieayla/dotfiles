@@ -1,0 +1,5 @@
+packages:
+  uv:
+    repo: "astral-sh/uv"
+    installer: "uv-installer.sh"
+    release: "latest"

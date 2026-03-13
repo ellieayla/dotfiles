@@ -18,6 +18,9 @@ README.md
 .config/mapillary/configs/*
 .config/GNS3
 .config/hister
+/mailmap.txt
+/replacements.txt
+
 
 # cache doesn't need to be stored
 /.cache
@@ -28,6 +31,9 @@ README.md
 /.cargo/registry/*
 .cargo/registry
 .cargo/
+/.cookiecutters
+/.cookiecutter_replay
+
 
 /.dvdcss
 /.matplotlib

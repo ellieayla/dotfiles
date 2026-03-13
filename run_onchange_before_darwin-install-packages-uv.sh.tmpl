@@ -1,0 +1,23 @@
+{{ if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+# after templating, this file only has content when os=darwin
+
+if command -v uv; then
+    exit 0
+fi
+
+echo "Trying to install {{ .packages.uv.repo }}"
+
+t=$(mktemp -d)
+
+# latest
+gh release download --repo {{ .packages.uv.repo }} --dir "$t" --pattern "uv-installer.sh"
+gh attestation verify "$t/uv-installer.sh" --repo astral-sh/uv
+
+sh "$t/uv-installer.sh"
+
+rm "$t/uv-installer.sh"
+
+rmdir "$t"
+
+{{ end -}}
