@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+function help() {
+    echo "Usage: `basename $0` pattern"
+    echo
+    echo "Also accepts everything grep does, but searches over key project files in ~/workspace/*/stuff"
+    echo
+    grep --help
+}
+
+if [ $# -eq 0 ]; then
+    help
+    exit 1
+fi
+if [ $# -eq 1 ]; then
+    if [ "$1" == "--help" ]; then
+        help
+        exit 0
+    fi
+fi
+
+function grep_one_project() {
+    # $@ is still all the CLI arguments, plus one more on the front for the project directory.
+    # Retrive it and shift the rest of the arguments over
+    project_dir="$1"
+    shift
+
+    grep --color=yes --line-number --line-buffered --no-messages "$@" $project_dir/.pre-commit-config.yaml $project_dir/pyproject.toml $project_dir/.github/workflows/*
+}
+
+export -f grep_one_project
+
+find ~/workspace/ -type d -maxdepth 1 -print0 | xargs -0 -I % bash -c 'grep_one_project "$@"' _ % "$@" | replace-home

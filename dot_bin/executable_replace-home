@@ -1,0 +1,11 @@
+#!/usr/bin/env python3
+
+from os.path import expanduser
+import fileinput
+
+
+if __name__ == "__main__":
+    home=expanduser("~")
+
+    for line in fileinput.input():
+        print(line.replace(home, "~"), end="")
