@@ -29,11 +29,11 @@ README.md
 /.bundle/
 /.config/xbuild/pkgconfig-cache-2.xml
 /.cargo/registry/*
-.cargo/registry
-.cargo/
+/.cargo/registry
+/.cargo/
 /.cookiecutters
 /.cookiecutter_replay
-
+/.bin/.mypy_cache
 
 /.dvdcss
 /.matplotlib

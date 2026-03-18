@@ -32,13 +32,12 @@
     helper = osxkeychain
 [init]
     defaultBranch = main
-	templateDir = /Users/ellie/.git-template
+	templateDir = ~/.git-template
 [log]
     date = iso-local
-
+    mailmap = true
 [mailmap]
     file = ~/.mailmap
-
 [diff "ical"]
     textconv = uv tool run icalendar
 [diff "json"]
