@@ -1,25 +1,19 @@
-#!/usr/bin/env bash
-
+#!/bin/zsh
 
 CHECKFILE=~/.config/chezmoi/dotfiles-status.check
 MINUTES=10
-if [ "$1" == "auto" ]; then
+if [[ "$1" == "auto" ]]; then
 	if [ -e $CHECKFILE ]; then
 		# file exists
-		if find $CHECKFILE -type f -mmin +$MINUTES | grep --quiet .; then
-			# file modified more than $MINUTES ago
-			:
-		else
-			# file newer than $MINUTES
-			# just quietly don't bother checking
-			# "recently modified in last $MINUTES minutes, just exit"
-			exit 1
+		if ! find $CHECKFILE -type f -mmin +$MINUTES | grep --quiet .; then
+			# and touched recently
+			exit 0
 		fi
-		# "file is older than $MINUTES minutes"
 	fi
 fi
 
-touch $CHECKFILE
+(
+touch "$CHECKFILE"
 
 RED='\033[0;31m'
 NC='\033[0m' # No Color
@@ -50,3 +44,4 @@ if [ "$(chezmoi unmanaged)" != "" ]; then
 	echo " -> $EDITOR ~/.local/share/chezmoi/.chezmoiignore"
 	chezmoi unmanaged --path-style absolute | replace-home | indent
 fi
+)
