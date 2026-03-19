@@ -67,7 +67,7 @@ HIST_STAMPS="yyyy-mm-dd"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-
+plugins=(git ssh motd)
 source $ZSH/oh-my-zsh.sh
 
 
@@ -167,8 +167,6 @@ autoload -U +X compinit && compinit
 # NOTE you want to: kubectl completion zsh > /usr/local/etc/bash_completion.d/kubectl
 source <(kubectl completion zsh)
 
-plugins=(git history kubectl ssh tailscale)
-
 if [[ $OSTYPE == darwin* ]]; then
     # This function means `cdf` changes directory to that of your frontmost Finder window.
     # Based on https://twitter.com/QuinnyPig/status/1473112091808591874?s=20
@@ -214,6 +212,8 @@ N_PREFIX=$HOME/.local
 export PATH="$PATH:/usr/local/texlive/2025/bin/universal-darwin"
 eval "$(atuin init zsh)"
 
-if [ -e ~/.bin/dotfiles-status ]; then
-  : | ~/.bin/dotfiles-status auto
-fi
+#if [ -e ~/.bin/dotfiles-status ]; then
+#  ~/.bin/dotfiles-status auto
+#fi
+
+motd_display_auto
