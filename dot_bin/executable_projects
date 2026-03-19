@@ -1,0 +1,43 @@
+#!/usr/bin/env python3
+
+"""
+Dump a list of everthing in ~/workspace (plus ~/.bin),
+sorted by mtime (or ctime, whichever is higher).
+
+All absolute paths.
+
+If -0, seperate by null byte. Useful for xargs.
+"""
+
+import sys
+from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import os
+
+if sys.argv and len(sys.argv) > 1 and sys.argv[1] == "-0":
+    end="\0"
+else:
+    end="\n"
+
+workspace_dir=Path("~/workspace").expanduser()
+
+project_dirs_discovered=[
+    (p, p.stat())
+    for p in workspace_dir.iterdir()
+    if not p.name.startswith(".")
+]
+
+def by_time(path_and_stat: "tuple[Path, os.stat_result]") -> float:
+    return max(path_and_stat[1].st_mtime, path_and_stat[1].st_ctime)
+
+# oldest first
+project_dirs_dirs_by_mtime=sorted(project_dirs_discovered, key=by_time)
+
+# but stuff the bindir first
+bindir = Path("~/.bin").expanduser()
+print(bindir, end=end)
+
+for dir in project_dirs_dirs_by_mtime:
+    print(dir[0], end=end)

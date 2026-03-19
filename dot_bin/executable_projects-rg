@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+cd ~/workspace
+rg --max-depth 4 --hyperlink-format=vscode --max-filesize 500K \
+    --one-file-system --max-columns 300 \
+    --type-not svg \
+    --type-not lock \
+    --color=always --smart-case "$@"

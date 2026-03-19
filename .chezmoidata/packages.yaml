@@ -2,4 +2,7 @@ packages:
   darwin:
     brews:
     - 'gh'
+    - 'ripgrep'
+    - fzf
+    - bat
     casks:

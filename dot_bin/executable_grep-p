@@ -1,33 +1,19 @@
 #!/usr/bin/env bash
 
-function help() {
-    echo "Usage: `basename $0` pattern"
-    echo
-    echo "Also accepts everything grep does, but searches over key project files in ~/workspace/*/stuff"
-    echo
-    grep --help
-}
+# based on https://junegunn.github.io/fzf/tips/ripgrep-integration/
+# with some changes:
+#  - ignore svg & lock files
+#  - sort with recently-modified at the bottom
+#  - search in ~/workspace
+#  - launch vscode on Enter and jump to file:line:column
+#  - no header on bat
 
-if [ $# -eq 0 ]; then
-    help
-    exit 1
-fi
-if [ $# -eq 1 ]; then
-    if [ "$1" == "--help" ]; then
-        help
-        exit 0
-    fi
-fi
-
-function grep_one_project() {
-    # $@ is still all the CLI arguments, plus one more on the front for the project directory.
-    # Retrive it and shift the rest of the arguments over
-    project_dir="$1"
-    shift
-
-    grep --color=yes --line-number --line-buffered --no-messages "$@" $project_dir/.pre-commit-config.yaml $project_dir/pyproject.toml $project_dir/.github/workflows/*
-}
-
-export -f grep_one_project
-
-find ~/workspace/ -type d -maxdepth 1 -print0 | xargs -0 -I % bash -c 'grep_one_project "$@"' _ % "$@" | replace-home
+(RELOAD='reload:rg --sortr=modified --max-depth 4 --hyperlink-format=vscode --max-filesize 500K --one-file-system --max-columns 150 --type-not svg --type-not lock --column --color=always --smart-case {q} || :'
+ cd ~/workspace && fzf --disabled --ansi \
+ --bind "start:$RELOAD" --bind "change:$RELOAD" \
+ --delimiter : \
+ --bind 'enter:execute(code --goto ~/workspace/{1}:{2}:{3} &)+execute(echo -n ~/workspace/)+accept' \
+ --preview 'bat --style=numbers --color=always --highlight-line {2} {1}' \
+ --preview-window '+{2}+4/3,<120(up)' \
+ --query "$*" \
+)
