@@ -82,8 +82,8 @@ README.md
 /.rubies
 /.atuin
 /.local/
-#.oh-my-zsh
-#!.oh-my-zsh/custom
+.oh-my-zsh
+!.oh-my-zsh/custom
 .npm/node-sass
 .npm
 .config/StardewValley/default_options
