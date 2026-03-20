@@ -82,8 +82,8 @@ README.md
 /.rubies
 /.atuin
 /.local/
-.oh-my-zsh
-!.oh-my-zsh/custom
+.oh-my-zsh/
+!.oh-my-zsh/custom/
 .npm/node-sass
 .npm
 .config/StardewValley/default_options
@@ -115,13 +115,18 @@ README.md
 # old dotfiles directory
 /.dotfiles
 
+# Custom launchd / plist files
+!Library/LaunchAgents
+!Library/LaunchAgents/ssh*.plist
+!Library/LaunchAgents/custom*.plist
+Library/LaunchAgents/com*.plist
 # ignore huge swaths of home directory
 /Applications/
 /Desktop/
 /Downloads/
 /Documents/
 /GNS3/
-/Library/
+Library/*
 /Movies/
 /Music/
 /Pictures/

@@ -14,7 +14,7 @@ import subprocess
 
 from argparse import ArgumentParser
 from collections.abc import Iterable
-from typing import Callable, IO, Iterator
+from typing import Callable, IO
 
 
 class Colors:
