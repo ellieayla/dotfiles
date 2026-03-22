@@ -8,7 +8,7 @@
 #  - launch vscode on Enter and jump to file:line:column
 #  - no header on bat
 
-(RELOAD='reload:rg --sortr=modified --max-depth 4 --hyperlink-format=vscode --max-filesize 500K --one-file-system --max-columns 150 --type-not svg --type-not lock --column --color=always --smart-case {q} || :'
+(RELOAD='reload:rg --sortr=modified --max-depth 4 --hidden --glob=!.git --hyperlink-format=vscode --max-filesize 500K --one-file-system --max-columns 150 --type-not svg --type-not lock --column --color=always --smart-case {q} || :'
  cd ~/workspace && fzf --disabled --ansi \
  --bind "start:$RELOAD" --bind "change:$RELOAD" \
  --delimiter : \
