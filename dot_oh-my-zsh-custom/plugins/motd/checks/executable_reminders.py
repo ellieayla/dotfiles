@@ -5,13 +5,17 @@
 # ]
 # ///
 
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta
 from random import choice
 import subprocess
 import typing
 from dataclasses import dataclass, field
 
 import json
+from zoneinfo import ZoneInfo
+
+
+Eastern = ZoneInfo("America/Toronto")
 
 
 class ReminderFromJson(typing.TypedDict):
@@ -51,7 +55,7 @@ def due_in_future(now: datetime, d: datetime) -> bool:
 def simple_due_date(d: typing.Optional[datetime]) -> str:
     if d is None:
         return "Someday"
-    start_today = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0)
+    start_today = datetime.now(Eastern).astimezone().replace(hour=0, minute=0, second=0)
     end_today = start_today.replace(hour=23, minute=59)
 
     if start_today < d < end_today:
@@ -159,7 +163,7 @@ def reminder_url(reminder_uuid: str) -> str:
 
 
 def main() -> int:
-    today = datetime.now(timezone.utc)
+    today = datetime.now(Eastern)
 
     a_r = get_all_reminders()
 
