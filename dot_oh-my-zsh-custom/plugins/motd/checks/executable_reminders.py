@@ -5,7 +5,7 @@
 # ]
 # ///
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date, time
 from random import choice
 import subprocess
 import typing
@@ -55,16 +55,18 @@ def due_in_future(now: datetime, d: datetime) -> bool:
 def simple_due_date(d: typing.Optional[datetime]) -> str:
     if d is None:
         return "Someday"
-    start_today = datetime.now(Eastern).astimezone().replace(hour=0, minute=0, second=0)
-    end_today = start_today.replace(hour=23, minute=59)
 
-    if start_today < d < end_today:
+    start_today = datetime.combine(date=datetime.now(Eastern).date(), time=time(hour=0), tzinfo=Eastern)
+    start_yesterday = start_today - timedelta(days=1)
+    start_tomorrow = start_today + timedelta(days=1)
+
+    if start_today <= d < start_tomorrow:
         return "Today"
 
-    if start_today - timedelta(days=1) < d < start_today:
+    if start_yesterday <= d < start_today:
         return "Yesterday"
 
-    if start_today + timedelta(days=1) < d < start_today + timedelta(days=2):
+    if start_tomorrow <= d <= start_tomorrow + timedelta(days=1):
         return "Tomorrow"
 
     return d.strftime("%Y-%m-%d")
@@ -108,11 +110,11 @@ class Reminder:
         )
 
     def __repr__(self) -> str:
-        link = repr(Hyperlink(url=reminder_url(self.external_id), text=simple_due_date(self.due)))
-        first_chunk = f"{link} {self.title}"
+        link = Hyperlink(url=reminder_url(self.external_id), text=simple_due_date(self.due))
+        first_chunk = f"{link!r} {self.title}"
 
         max_width = 120
-        remaining_characters = max_width - len(first_chunk)
+        remaining_characters = max_width - len(link)
 
         everything_else = ""
 
@@ -145,6 +147,9 @@ class Hyperlink:
     ESC = "\x1b"
     OSC_8 = f"{ESC}]8"
     ST = f"{ESC}\\"
+
+    def __len__(self) -> int:
+        return len(self.text)
 
     def __repr__(self) -> str:
         params = ":".join([f"{k}={v}" for (k, v) in self.params.items()])  # possibly (probably) empty string
