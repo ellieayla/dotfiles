@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+set -e
+
+E_BADARGS=85
+BINDIR=~/.bin
+
+if [ ! -n "$1" ]; then
+    echo "Usage: `basename $0` $BINDIR/new-idea [template]"
+    exit $E_BADARGS
+fi
+
+target_file=$1
+shift
+
+if [ ! -e "$target_file" ]; then
+    # the target file doesn't exist
+    template_file=$(
+        rg --sortr=created --files-with-matches -- '^#!/usr/bin/env -S uv run' $BINDIR | \
+        fzf --ansi --height=50 --prompt="Template > " --query="$1" \
+            --delimiter="/" \
+            --with-nth="-1" \
+            --accept-nth=".." \
+            --preview 'bat --style=full --squeeze-blank --language=py --color=always {..}' \
+            --preview-window '~4,+{2}+4/3,<80(up)' \
+            --bind "enter:accept" #become:$0 '$target_file' {1..}"
+    )
+
+    # fzf doesn't accept anything then it will exit with non-0
+    # because of set -e above, script will terminate
+
+    # we have an accepted template file
+    # copy it, refusing to overwrite target_file, preserving permissions, verbose output
+    echo "Using template file $template_file"
+    cp -npv "$template_file" "$target_file"
+fi
+
+echo "🌸 Working on $target_file"
+
+# these are safe to re-run on an existing file
+set -x
+uv init --script --verbose -- "$target_file" || : # ok
+chmod +x "$target_file"
+code "$target_file"

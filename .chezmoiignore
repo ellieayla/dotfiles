@@ -61,6 +61,7 @@ README.md
 .logseq/
 
 # config we don't care about
+/.vscode-shared
 /.vscode
 .config/gtk-2.0/gtkfilechooser.ini
 .config/gtk-2.0
